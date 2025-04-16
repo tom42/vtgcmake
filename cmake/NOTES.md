@@ -21,3 +21,25 @@ We do not use CDash, so we do not need the `CTest` module.
 
 We do not use CDash and therefore we do not use the `CTest` module, so there
 is little point in ever setting `BUILD_TESTING`.
+
+## So what is required to run tests?
+1. `enable_testing()` needs to be called in the top-level source directory.
+2. Then, tests can be added with the `add_test()` command.
+
+The [CMake manual on `enable_testing()`](https://cmake.org/cmake/help/latest/command/enable_testing.html):
+
+> Enables testing for this directory and below.
+>
+> This command should be in the top-level source directory because `ctest(1)`
+> expects to find a test file in the top-level build directory.
+
+And the [CMake manual on `add_test()`](https://cmake.org/cmake/help/latest/command/add_test.html):
+
+> Adds a test [...].
+>
+> CMake only generates tests if the `enable_testing()` command has been invoked.
+> The `CTest` module invokes `enable_testing()` automatically unless `BUILD_TESTING`
+> is set to `OFF`.
+
+We do not use the `CTest` module, but we can and are allowed to call
+`enable_testing()` ourselves.
