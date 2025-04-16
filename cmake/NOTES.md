@@ -64,3 +64,28 @@ In this case it may be undesired if enabling tests in A also enables B's tests.
 
 Providing a project specific build testing variable and grouping things together
 by prefixing it with the project name is actually very good advice.
+
+## Example
+
+Minimal example that puts together the ideas from above:
+
+```cmake
+project(myproject)
+
+# Whether to enable and build tests. Default to true if main project, false otherwise.
+option(myproject_BUILD_TESTING "Build myproject tests." ${PROJECT_IS_TOP_LEVEL})
+
+# Build production code
+add_subdirectory(src)
+
+# Set up testing and build tests
+if(myproject_BUILD_TESTING)
+  # enable_testing() should be called from the top-level source directory,
+  # that is, the file that contains the project command.
+  enable_testing()
+  # ...
+  # More test setup. Maybe detect the unit test framework using find_package.
+  # ...
+  add_subdirectory(test)
+endif()
+```
