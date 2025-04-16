@@ -4,4 +4,4 @@ SPDX-License-Identifier: MIT
 -->
 
 # vtgcmake
-CMake scripts I use to build my stuff and [some notes](NOTES.md) on CMake usage.
+CMake scripts I use to build my stuff and some [notes on CMake usage](NOTES.md).
