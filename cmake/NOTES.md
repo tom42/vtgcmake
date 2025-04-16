@@ -41,5 +41,26 @@ And the [CMake manual on `add_test()`](https://cmake.org/cmake/help/latest/comma
 > The `CTest` module invokes `enable_testing()` automatically unless `BUILD_TESTING`
 > is set to `OFF`.
 
-We do not use the `CTest` module, but we can and are allowed to call
-`enable_testing()` ourselves.
+We do not use the `CTest` module, but we can call `enable_testing()` ourselves.
+
+## Dealing with tests when being used as a subproject
+
+Assume we're working on project A, which uses project B as a subproject.
+In this case it may be undesired if enabling tests in A also enables B's tests.
+
+[Quote from Craig Scott](https://discourse.cmake.org/t/how-to-use-fetchcontent-correctly-for-building-external-dependencies/3686/2):
+
+> A well-structured project should ideally provide a project-specific CMake
+> variable that can be passed down to turn tests on or off, and it should
+> default to true if the dependency is being built on its own and false if it
+> is not the top level project.
+
+[Related quote from Ben Boeckel](https://discourse.cmake.org/t/fetchcontent-vs-build-testing/4477/4):
+
+> Basically I would try and namespace as much as possible. For example,
+> offer `MyProject_BUILD_TESTING` then set `BUILD_TESTING` internally based on it.
+> It helps to keep your relevant options grouped in the cache file and editors
+> as well as offering useful knobs when embedded.
+
+Providing a project specific build testing variable and grouping things together
+by prefixing it with the project name is actually very good advice.
