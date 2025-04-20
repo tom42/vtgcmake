@@ -3,6 +3,24 @@ SPDX-FileCopyrightText: 2025 Thomas Mathys
 SPDX-License-Identifier: MIT
 -->
 
+# Modules
+## Adding directories to `CMAKE_MODULE_PATH`
+Example, based on [this](https://discourse.cmake.org/t/how-to-properly-import-cmake-files-modules/2816/2):
+
+```cmake
+list(INSERT CMAKE_MODULE_PATH 0 "${CMAKE_CURRENT_LIST_DIR}/cmake")
+```
+
+Note two things:
+
+1. We use a variable such as `CMAKE_CURRENT_LIST_DIR` to ensure the correct
+   directory is added even when the project is used as a subproject.
+   Do not use variables such as `CMAKE_SOURCE_DIR`.
+2. We *prepend* our directory to `CMAKE_MODULE_PATH`. If our directory
+   contains module 'foo', and other projects have added directories that also
+   contain modules called 'foo', then our module 'foo' is found first, which
+   is most likely what we want.
+
 # Testing
 ## `include(CTest)` is not required unless CDash is used
 [Quote from Craig Scott](https://discourse.cmake.org/t/project-structure-for-unit-testing-and-coverage/9038/4):
