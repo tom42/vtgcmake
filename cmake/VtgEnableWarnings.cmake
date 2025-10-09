@@ -75,3 +75,21 @@ function(vtg_target_enable_warnings target)
   endif()
 
 endfunction()
+
+function(vtg_target_enable_warnings_for_test target)
+
+  if(NOT vtg_ENABLE_WARNINGS)
+    return()
+  endif()
+
+  vtg_target_enable_warnings(${target})
+
+  if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    target_compile_options(${target} PRIVATE -Wno-float-equal)
+  endif()
+
+  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+    target_compile_options(${target} PRIVATE -Wno-float-equal)
+  endif()
+
+endfunction()
