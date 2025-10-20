@@ -107,3 +107,70 @@ if(myproject_BUILD_TESTING)
   add_subdirectory(test)
 endif()
 ```
+
+# vcpkg
+## Using vcpkg in classic mode
+Microsoft recommends to use vcpkg in manifest mode [here](https://learn.microsoft.com/en-us/vcpkg/concepts/classic-mode).
+On the same page they state that
+
+> Because the set of installed packages is not associated with an individual
+> project, classic mode operates similarly to tools like `brew` or `apt`. However,
+> the set is still associated with a vcpkg instance, and each instance of vcpkg
+> (such as separate git clone copies) will have its own set of classic mode
+> packages installed.
+
+Something that operates similarly to `apt` is exactly what we want.
+
+## Install vcpkg
+Install vcpkg as described [here in step 1](https://learn.microsoft.com/en-us/vcpkg/get_started/get-started?pivots=shell-cmd#1---set-up-vcpkg).
+Basically
+
+```
+git clone https://github.com/microsoft/vcpkg.git
+```
+
+and then
+
+```
+cd vcpkg && bootstrap-vcpkg.bat -disableMetrics
+```
+
+No further steps are required. In particular it is not necessary to set the
+`VCPKG_ROOT` environment variable or to add anything to `PATH`.
+
+## Install a package in classic mode
+For example, in the directory where our vcpkg instance is installed:
+
+```
+vcpkg install catch2
+```
+
+This will install Catch2, so that later CMake's `find_package` command will
+be able to find Catch2 if we tell CMake about our vcpkg instance.
+
+If the command above fails with odd error messages regarding a directory
+called `detect_compiler` not being found, rerun the command with the `--debug`
+switch:
+
+```
+vcpkg install catch2 --debug
+```
+
+Analyze the output, chances are that the command is failing because vcpkg
+is accidentally using some Cygwin or MSYS2 CMake binary it found in the path.
+If this is the case, fix your `PATH` environment variable so that vcpkg finds
+the native Win32 CMake binary. See also this [issue on github](https://github.com/microsoft/vcpkg/issues/17188).
+
+It is not necessary to permanently modify the `PATH` environment variable.
+It only needs to be correct to run the `install` command.
+
+## Using packages that are installed in classic mode
+During configuration, tell CMake about the vcpkg instance's toolchain file:
+
+```
+cmake -DCMAKE_TOOLCHAIN_FILE=c:\tools\vcpkg\scripts\buildsystems\vcpkg.cmake
+```
+
+That's all. The `find_package` command will now be able to find packages
+installed into the vcpkg instance. Alternatively, set the toolchain file
+using a CMake preset.
